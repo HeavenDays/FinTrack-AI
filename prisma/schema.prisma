@@ -1,0 +1,60 @@
+// Prisma Schema - FinTrack AI
+// Sistem Manajemen Pengeluaran Harian & Prediksi AI
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Expense {
+  id          String   @id @default(uuid())
+  amount      Float
+  category    String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([category])
+}
+
+model Income {
+  id          String   @id @default(uuid())
+  amount      Float
+  source      String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([source])
+}
+
+model EmergencyFund {
+  id          String   @id @default(uuid())
+  amount      Float
+  type        String   // "deposit" or "withdrawal"
+  description String?
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([type])
+}
+
+model LearningNote {
+  id          String   @id @default(uuid())
+  title       String
+  content     String
+  topic       String
+  status      String   @default("in-progress") // "in-progress", "completed", "review"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([createdAt])
+  @@index([topic])
+  @@index([status])
+}
