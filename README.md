@@ -12,6 +12,13 @@
 
 FinTrack AI adalah aplikasi manajemen keuangan pribadi full-stack yang ditenagai oleh kecerdasan buatan. Dibangun dengan **Next.js 16 App Router**, aplikasi ini membantu pengguna melacak pemasukan & pengeluaran, memprediksi pola keuangan, serta memberikan rekomendasi hemat secara cerdas.
 
+---
+
+## 📸 Preview
+
+![FinTrack AI Dashboard](docs/dashboard-preview.png)
+
+---
 
 ## ✨ Fitur Utama
 
