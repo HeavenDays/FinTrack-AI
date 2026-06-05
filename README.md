@@ -1,222 +1,359 @@
-# Panduan Proyek: FinTrack AI (Sistem Manajemen Pengeluaran Harian & Prediksi AI)
+<![CDATA[<div align="center">
 
-Dokumen ini berisi panduan arsitektur, struktur folder, skema warna, konfigurasi Docker, dan alur integrasi AI untuk membangun aplikasi pelacak pengeluaran harian dengan sistem prediksi cerdas menggunakan **Next.js (App Router)** dan **Docker**.
+# 💰 FinTrack AI
+
+### Sistem Manajemen Keuangan Pribadi dengan Prediksi AI
+
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-7-2D3748?style=for-the-badge&logo=prisma)](https://www.prisma.io/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+
+**FinTrack AI** adalah aplikasi manajemen keuangan pribadi full-stack yang ditenagai oleh kecerdasan buatan. Dibangun dengan arsitektur modern menggunakan **Next.js 16 App Router**, aplikasi ini membantu pengguna melacak pemasukan & pengeluaran, memprediksi pola keuangan, serta memberikan rekomendasi hemat secara cerdas.
+
+</div>
 
 ---
 
-## 🎨 1. Sistem Warna (Color Hunt Palette & Global CSS)
+## 📸 Preview
 
-Untuk menciptakan tampilan **modern, profesional, dan premium** (tidak terkesan murah atau "buatan AI template"), kita menggunakan palet warna gelap (Dark Mode) dengan aksen Indigo dan Teal yang terinspirasi dari Color Hunt yang merepresentasikan ketenangan finansial (*financial clarity*) dan teknologi modern.
+<div align="center">
 
-### Global CSS (`src/styles/globals.css`)
-Salin konfigurasi CSS variabel berikut untuk digunakan bersama Tailwind CSS atau Vanilla CSS:
+![FinTrack AI Dashboard](docs/dashboard-preview.png)
 
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+</div>
 
-:root {
-  /* Color Hunt Palette: Navy Obsidian & Emerald Indigo */
-  --background: #090d16;       /* Deep Obsidian Blue (Sangat Gelap & Premium) */
-  --surface: #111827;          /* Slate Dark (Untuk Card & Form) */
-  --surface-hover: #1f2937;    /* Slate Dark Hover State */
-  
-  --primary: #6366f1;          /* Indigo 500 (Aksen AI & Navigasi Utama) */
-  --primary-glow: rgba(99, 102, 241, 0.15);
-  
-  --success: #10b981;          /* Emerald 500 (Pemasukan / Aman) */
-  --warning: #f59e0b;          /* Amber 500 (Mendekati Limit) */
-  --danger: #ef4444;           /* Red 500 (Pengeluaran / Overbudget) */
-  
-  --text-primary: #f9fafb;     /* White/Slate 50 */
-  --text-secondary: #9ca3af;   /* Gray 400 (Informasi tambahan) */
-  --text-muted: #6b7280;       /* Gray 500 (Placeholder / Tanggal) */
-  
-  --border: #1f2937;           /* Slate 800 (Garis batas halus) */
-  --border-focus: #374151;
-  
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-}
+---
 
-body {
-  background-color: var(--background);
-  color: var(--text-primary);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  overflow-x: hidden;
-}
+## ✨ Fitur Utama
 
-/* Custom Premium Micro-Interactions */
-.glass-card {
-  background: rgba(17, 24, 39, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
+| Fitur | Deskripsi |
+|---|---|
+| 📊 **Dashboard Interaktif** | Ringkasan saldo, pengeluaran harian/bulanan, rata-rata harian, dan grafik tren 7 hari terakhir |
+| 💸 **Manajemen Pengeluaran** | CRUD pengeluaran lengkap dengan kategori, deskripsi, dan filter tanggal |
+| 💰 **Manajemen Pemasukan** | Pencatatan pemasukan dari berbagai sumber dengan riwayat lengkap |
+| 🛡️ **Dana Darurat** | Fitur pengelolaan dana darurat dengan sistem deposit & penarikan |
+| 🤖 **Prediksi AI** | Analisis pola pengeluaran dan prediksi harian/bulanan menggunakan AI (OpenRouter API) |
+| 📈 **Analisis & Laporan** | Visualisasi data keuangan dengan chart interaktif (Recharts) dan ekspor laporan PDF |
+| 📄 **Import PDF** | Impor data pengeluaran dari file PDF secara otomatis |
+| 🌗 **Dark / Light Mode** | Tema gelap & terang dengan transisi halus |
+| 📱 **PWA Ready** | Dapat diinstal sebagai aplikasi di perangkat mobile |
+| 🎨 **Money Matrix Background** | Efek visual premium dengan animasi simbol mata uang |
 
-.glass-card:hover {
-  border-color: rgba(99, 102, 241, 0.4);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3), 0 0 15px var(--primary-glow);
-}
+---
 
-.btn-primary {
-  background: var(--primary);
-  color: var(--text-primary);
-  padding: 0.75rem 1.5rem;
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
+## 🛠️ Tech Stack
 
-.btn-primary:hover {
-  filter: brightness(1.1);
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
-}
+### Frontend
+| Teknologi | Versi | Kegunaan |
+|---|---|---|
+| **Next.js** | 16.2.6 | Framework React full-stack dengan App Router |
+| **React** | 19.2.4 | Library UI komponen deklaratif |
+| **TypeScript** | 5.x | Static typing untuk JavaScript |
+| **Tailwind CSS** | 4.x | Utility-first CSS framework |
+| **Recharts** | 3.8.1 | Library chart untuk visualisasi data keuangan |
+| **Lucide React** | 1.17.0 | Icon library modern dan minimalis |
+| **SWR** | 2.4.1 | Data fetching & caching |
+
+### Backend
+| Teknologi | Versi | Kegunaan |
+|---|---|---|
+| **Next.js API Routes** | 16.2.6 | REST API endpoint (App Router `route.ts`) |
+| **Prisma ORM** | 7.8.0 | Database ORM dengan type-safe queries |
+| **PostgreSQL** | 15 | Relational database untuk penyimpanan data |
+| **OpenRouter API** | — | AI provider untuk prediksi keuangan (Qwen model) |
+| **pdf-parse** | 2.4.5 | Parser PDF untuk fitur import pengeluaran |
+| **jsPDF** | 4.2.1 | Generator laporan PDF |
+
+### DevOps & Tooling
+| Teknologi | Kegunaan |
+|---|---|
+| **Docker** | Containerization dengan multi-stage build |
+| **Docker Compose** | Orchestrasi Next.js + PostgreSQL |
+| **ESLint** | Linting & code quality |
+| **PostCSS** | CSS processing pipeline |
+
+---
+
+## 🏗️ Arsitektur & Alur Aplikasi
+
+```mermaid
+graph TB
+    subgraph Client ["🖥️ Frontend (React 19 + Next.js 16)"]
+        A["Dashboard Page"]
+        B["Pengeluaran Page"]
+        C["Pemasukan Page"]
+        D["Dana Darurat Page"]
+        E["Analisis AI Page"]
+        F["Sidebar Navigation"]
+    end
+
+    subgraph API ["⚡ API Routes (Next.js App Router)"]
+        G["/api/expenses"]
+        H["/api/incomes"]
+        I["/api/emergency-fund"]
+        J["/api/predict"]
+        K["/api/expenses/stats"]
+        L["/api/expenses/import-pdf"]
+        M["/api/stocks"]
+    end
+
+    subgraph Services ["🧠 Services"]
+        N["Prisma ORM Client"]
+        O["OpenRouter AI (Qwen Model)"]
+        P["PDF Parser"]
+        Q["PDF Generator (jsPDF)"]
+    end
+
+    subgraph DB ["🗄️ Database"]
+        R[("PostgreSQL 15")]
+    end
+
+    A --> G & K & J
+    B --> G & L
+    C --> H
+    D --> I
+    E --> J & K & Q
+
+    G --> N
+    H --> N
+    I --> N
+    K --> N
+    L --> P --> N
+    J --> O
+    M --> O
+
+    N --> R
+```
+
+### Alur Data
+
+```mermaid
+sequenceDiagram
+    participant U as 👤 User
+    participant FE as 🖥️ Frontend
+    participant API as ⚡ API Route
+    participant DB as 🗄️ PostgreSQL
+    participant AI as 🤖 OpenRouter AI
+
+    Note over U, AI: Alur Pencatatan Pengeluaran
+    U->>FE: Input pengeluaran (jumlah, kategori, deskripsi)
+    FE->>API: POST /api/expenses
+    API->>DB: Prisma create expense
+    DB-->>API: Expense created
+    API-->>FE: Response JSON
+    FE->>FE: SWR mutate (refresh cache)
+    FE-->>U: Dashboard diperbarui
+
+    Note over U, AI: Alur Prediksi AI
+    U->>FE: Buka Dashboard / Analisis AI
+    FE->>API: GET /api/predict
+    API->>DB: Fetch 90 hari data pengeluaran
+    DB-->>API: Expense history
+    API->>AI: Kirim prompt + data historis
+    AI-->>API: JSON prediksi (harian, bulanan, rekomendasi)
+    API-->>FE: AIPredictionResponse
+    FE-->>U: Tampilkan prediksi & rekomendasi hemat
 ```
 
 ---
 
-## 📂 2. Struktur File & Folder (Maintainable Architecture)
-
-Struktur folder dirancang dengan memisahkan komponen UI reusable (*Atomic Design* sederhana), logika AI, dan interaksi database agar mudah di-maintenance jangka panjang.
+## 📂 Struktur Proyek
 
 ```
-fintrack-ai/
+FinTrack-AI/
 ├── src/
-│   ├── app/                    # Next.js App Router (Routing & Pages)
-│   │   ├── layout.tsx          # Shell navigasi dan provider global
-│   │   ├── page.tsx            # Dashboard utama (Ringkasan & Form Cepat)
-│   │   ├── pengeluaran/        # Halaman CRUD & riwayat pengeluaran
-│   │   │   └── page.tsx
-│   │   ├── analisis/           # Halaman AI Prediksi & Rekomendasi
-│   │   │   └── page.tsx
-│   │   └── api/                # API Backend routes
-│   │       ├── expenses/       # Endpoint kelola data pengeluaran
-│   │       │   └── route.ts
-│   │       └── predict/        # Endpoint integrasi AI Gemini
-│   │           └── route.ts
-│   ├── components/             # Reusable UI Components
-│   │   ├── ui/                 # Komponen dasar (Button, Input, Card, Select)
-│   │   ├── dashboard/          # Komponen spesifik dashboard (Chart, Stats)
-│   │   └── ai/                 # Widget visualisasi AI & Forecast
-│   ├── hooks/                  # Custom React Hooks (SWR/React Query helpers)
-│   │   └── useExpenses.ts
-│   ├── lib/                    # Library & Utility functions
-│   │   ├── db.ts               # Inisialisasi Prisma / DB Client
-│   │   ├── gemini.ts           # Helper integrasi Gemini AI
-│   │   └── utils.ts            # Formatter mata uang & manipulasi tanggal
-│   ├── styles/
-│   │   └── globals.css
-│   └── types/                  # TypeScript Interfaces
-│       └── index.ts
-├── prisma/                     # Database Schema (ORM)
-│   └── schema.prisma
-├── Dockerfile                  # Multi-stage production Docker build
-├── docker-compose.yml          # Container orchestration (Next.js + PostgreSQL)
-└── package.json
+│   ├── app/                         # Next.js App Router
+│   │   ├── layout.tsx               # Root layout + providers
+│   │   ├── page.tsx                 # Dashboard utama
+│   │   ├── pengeluaran/page.tsx     # Halaman pengeluaran
+│   │   ├── pemasukan/page.tsx       # Halaman pemasukan
+│   │   ├── dana-darurat/page.tsx    # Halaman dana darurat
+│   │   ├── analisis/page.tsx        # Halaman analisis AI
+│   │   ├── catatan/page.tsx         # Halaman catatan belajar
+│   │   ├── saham/page.tsx           # Halaman analisis saham
+│   │   └── api/                     # REST API endpoints
+│   │       ├── expenses/
+│   │       │   ├── route.ts         # GET, POST, DELETE pengeluaran
+│   │       │   ├── stats/route.ts   # Statistik dashboard
+│   │       │   └── import-pdf/route.ts
+│   │       ├── incomes/route.ts     # CRUD pemasukan
+│   │       ├── emergency-fund/route.ts
+│   │       ├── predict/route.ts     # Endpoint prediksi AI
+│   │       ├── notes/               # CRUD catatan
+│   │       └── stocks/              # Analisis saham
+│   ├── components/
+│   │   ├── ui/                      # Komponen UI dasar
+│   │   │   ├── Button.tsx
+│   │   │   ├── Card.tsx
+│   │   │   ├── Input.tsx
+│   │   │   ├── Select.tsx
+│   │   │   └── MoneyMatrixBackground.tsx
+│   │   ├── dashboard/               # Komponen dashboard
+│   │   │   ├── StatCard.tsx
+│   │   │   ├── BalanceCard.tsx
+│   │   │   ├── ExpenseChart.tsx
+│   │   │   ├── ExpenseForm.tsx
+│   │   │   ├── CategoryList.tsx
+│   │   │   ├── RecentList.tsx
+│   │   │   ├── Sidebar.tsx
+│   │   │   └── ...
+│   │   └── ai/
+│   │       └── PredictionCard.tsx    # Widget prediksi AI
+│   ├── hooks/
+│   │   └── useExpenses.ts           # Custom hooks (SWR)
+│   ├── lib/
+│   │   ├── db.ts                    # Prisma client singleton
+│   │   ├── gemini.ts                # OpenRouter AI integration
+│   │   ├── pdfExport.ts             # PDF report generator
+│   │   └── utils.ts                 # Formatter & helpers
+│   ├── context/
+│   │   └── ThemeContext.tsx          # Dark/Light mode provider
+│   └── types/
+│       └── index.ts                 # TypeScript interfaces
+├── prisma/
+│   └── schema.prisma                # Database schema (4 models)
+├── public/
+│   ├── manifest.json                # PWA manifest
+│   └── sw.js                        # Service worker
+├── Dockerfile                       # Multi-stage production build
+├── docker-compose.yml               # Next.js + PostgreSQL
+├── package.json
+└── tsconfig.json
 ```
 
 ---
 
-## 🐳 3. Konfigurasi Docker & Lingkungan Development
+## 🚀 Cara Menjalankan
 
-Dengan menggunakan Docker, database PostgreSQL dan server Next.js akan terisolasi dengan rapi.
+### Prasyarat
 
-### `Dockerfile`
-Gunakan multi-stage build untuk mengoptimalkan ukuran image Next.js di production:
+- **Node.js** >= 18.x
+- **PostgreSQL** >= 15 (atau gunakan Docker)
+- **API Key** dari [OpenRouter](https://openrouter.ai/) untuk fitur AI
 
-```dockerfile
-# Stage 1: Build dependencies
-FROM node:18-alpine AS deps
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
-COPY package.json package-lock.json ./
-RUN npm ci
+### 1. Clone Repository
 
-# Stage 2: Rebuild the source code only when needed
-FROM node:18-alpine AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-ENV NEXT_TELEMETRY_DISABLED 1
-# Generate prisma client sebelum build
-RUN npx prisma generate
-RUN npm run build
-
-# Stage 3: Runner
-FROM node:18-alpine AS runner
-WORKDIR /app
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/prisma ./prisma
-
-USER nextjs
-EXPOSE 3000
-ENV PORT 3000
-
-CMD ["npm", "start"]
+```bash
+git clone https://github.com/HeavenDays/FinTrack-AI.git
+cd FinTrack-AI
 ```
 
-### `docker-compose.yml`
-Menyediakan Next.js beserta PostgreSQL database secara instan:
+### 2. Install Dependencies
 
-```yaml
-version: '3.8'
+```bash
+npm install
+```
 
-services:
-  db:
-    image: postgres:15-alpine
-    container_name: fintrack-db
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: mysecretpassword
-      POSTGRES_DB: fintrack_db
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+### 3. Konfigurasi Environment
 
-  web:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: fintrack-web
-    ports:
-      - "3000:3000"
-    environment:
-      - DATABASE_URL=postgresql://postgres:mysecretpassword@db:5432/fintrack_db?schema=public
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-    depends_on:
-      - db
+Buat file `.env` di root directory:
 
-volumes:
-  postgres_data:
+```env
+# Database
+DATABASE_URL="postgresql://postgres:mysecretpassword@localhost:5432/fintrack_db?schema=public"
+
+# AI Provider
+OPENROUTER_API_KEY=sk-or-v1-your-api-key-here
+```
+
+### 4. Setup Database
+
+```bash
+# Generate Prisma client
+npx prisma generate
+
+# Push schema ke database
+npx prisma db push
+```
+
+### 5. Jalankan Development Server
+
+```bash
+npm run dev
+```
+
+Buka [http://localhost:3000](http://localhost:3000) di browser.
+
+---
+
+### 🐳 Menjalankan dengan Docker
+
+```bash
+# Buat file .env dengan OPENROUTER_API_KEY
+echo "OPENROUTER_API_KEY=sk-or-v1-your-key" > .env
+
+# Jalankan dengan Docker Compose
+docker-compose up --build -d
+
+# Push schema ke database container
+npx prisma db push
+```
+
+Aplikasi berjalan di `http://localhost:3000` dengan PostgreSQL di port `5432`.
+
+---
+
+## 📊 Database Schema
+
+Aplikasi menggunakan **4 model** utama di PostgreSQL melalui Prisma ORM:
+
+```mermaid
+erDiagram
+    Expense {
+        String id PK
+        Float amount
+        String category
+        String description
+        DateTime createdAt
+        DateTime updatedAt
+    }
+
+    Income {
+        String id PK
+        Float amount
+        String source
+        String description
+        DateTime createdAt
+        DateTime updatedAt
+    }
+
+    EmergencyFund {
+        String id PK
+        Float amount
+        String type
+        String description
+        DateTime createdAt
+    }
+
+    LearningNote {
+        String id PK
+        String title
+        String content
+        String topic
+        String status
+        DateTime createdAt
+        DateTime updatedAt
+    }
 ```
 
 ---
 
-## 🤖 4. Arsitektur Prediksi AI (Daily & Monthly)
+## 🤖 Integrasi AI
 
-Sistem AI tidak hanya memprediksi angka acak, melainkan menganalisis pola historis pengguna (misal: pengeluaran hari Jumat-Sabtu selalu naik karena akhir pekan). Kita akan menggunakan **Gemini API** (`@google/generative-ai`) dengan output terstruktur dalam format JSON.
+FinTrack AI menggunakan **OpenRouter API** dengan model **Qwen** untuk:
 
-### Prompt Strategi untuk Gemini (Structured JSON)
-Saat memanggil API Gemini, instruksikan model untuk merespons dengan JSON schema agar Next.js dapat memproses datanya ke dalam chart (Line Chart/Area Chart).
+- **Prediksi Harian** — Estimasi pengeluaran hari esok berdasarkan pola historis
+- **Prediksi Bulanan** — Proyeksi pengeluaran bulan depan
+- **Deteksi Kategori Boros** — Identifikasi kategori pengeluaran tertinggi
+- **Rekomendasi Hemat** — 3 tips praktis berdasarkan data nyata pengguna
+- **Deteksi Anomali** — Peringatan jika ada pengeluaran tidak wajar
 
-#### Contoh Model Interface Response AI:
 ```typescript
+// Contoh response AI
 interface AIPredictionResponse {
   prediksiHarianEsok: {
     nominal: number;
@@ -224,108 +361,25 @@ interface AIPredictionResponse {
   };
   prediksiBulananDepan: {
     nominal: number;
-    kategoriPrediksiTinggi: string; // Kategori yang diprediksi paling boros
+    kategoriPrediksiTinggi: string;
     alasan: string;
   };
-  rekomendasiHemat: string[]; // Maksimal 3 tips praktis non-templat
-  anomaliPengeluaran: string | null; // Deteksi jika ada pengeluaran tidak wajar
-}
-```
-
-#### Helper Fungsi AI (`src/lib/gemini.ts`):
-```typescript
-import { GoogleGenAI } from '@google/generative-ai';
-
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-
-export async function dapatkanPrediksiAI(historisPengeluaran: any[]) {
-  const model = ai.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-  const prompt = `
-    Anda adalah AI Asisten Keuangan Profesional. Tugas Anda adalah menganalisis data riwayat pengeluaran berikut dan memprediksi pengeluaran hari esok dan bulan depan secara akurat.
-    
-    Data Pengeluaran Historis:
-    ${JSON.stringify(historisPengeluaran)}
-
-    Berikan hasil analisis dalam format JSON murni tanpa markdown code block, dengan struktur berikut:
-    {
-      "prediksiHarianEsok": { "nominal": number, "alasan": string },
-      "prediksiBulananDepan": { "nominal": number, "kategoriPrediksiTinggi": string, "alasan": string },
-      "rekomendasiHemat": [string, string, string],
-      "anomaliPengeluaran": string | null
-    }
-  `;
-
-  const response = await model.generateContent(prompt);
-  return JSON.parse(response.response.text());
+  rekomendasiHemat: string[];
+  anomaliPengeluaran: string | null;
 }
 ```
 
 ---
 
-## 💎 5. Panduan Desain UI/UX (Clean & Professional Dashboard)
+## 📄 Lisensi
 
-Untuk menghindari tampilan yang terlihat seperti "Template AI murahan", ikuti aturan UI/UX berikut:
-
-1. **Gunakan Layout Grid Bersih**:
-   - Bagian kiri atas: Ringkasan saldo, pengeluaran hari ini, pengeluaran bulan ini (dengan angka besar yang tegas, gunakan font *Outfit* atau *Inter*).
-   - Bagian kanan atas: Form cepat tambah pengeluaran (kategori, jumlah, catatan ringkas).
-   - Bagian bawah/tengah: Grafik tren pengeluaran aktual vs garis putus-putus prediksi AI (Gunakan **Recharts** untuk visualisasi modern).
-2. **Hindari Ilustrasi / Icon Chatbot yang Mengganggu**:
-   - Jangan gunakan ikon robot 3D generik atau chatbot mengambang.
-   - Representasikan AI dengan efek glow ungu/indigo halus (`var(--primary-glow)`) pada tulisan/card rekomendasi.
-   - Gunakan ikon SVG fungsional yang tajam dan minimalis (seperti **Lucide React**).
-3. **Typography Hierarchy**:
-   - Teks penting: SemiBold / Bold, warna putih (`var(--text-primary)`).
-   - Teks deskripsi / Label: Regular, warna abu-abu (`var(--text-secondary)`).
-   - Nilai mata uang: Format tebal `Rp XX.XXX.XXX`.
+Proyek ini dibuat untuk keperluan edukasi dan pengembangan pribadi.
 
 ---
 
-## 🚀 6. Cara Memulai Langkah Pengembangan
+<div align="center">
 
-1. **Inisialisasi Project Next.js & Prisma**:
-   ```bash
-   npx create-next-app@latest . --typescript --tailwind --eslint --src-dir --app --import-alias "@/*"
-   npm install @prisma/client @google/generative-ai lucide-react recharts swr
-   npm install --save-dev prisma
-   npx prisma init
-   ```
+Dibuat dengan ❤️ menggunakan **Next.js 16**, **React 19**, **Prisma 7**, dan **AI**
 
-2. **Setup Skema Database (`prisma/schema.prisma`)**:
-   ```prisma
-   datasource db {
-     provider = "postgresql"
-     url      = env("DATABASE_URL")
-   }
-
-   generator client {
-     provider = "prisma-client-js"
-   }
-
-   model Expense {
-     id          String   @id @default(uuid())
-     amount      Float
-     category    String
-     description String?
-     createdAt   DateTime @default(now())
-   }
-   ```
-
-3. **Jalankan Aplikasi dengan Docker**:
-   Buat file `.env` di root directory dan isi `GEMINI_API_KEY` Anda:
-   ```env
-   GEMINI_API_KEY=AIzaSyYourGeminiKeyHere
-   ```
-   Lalu jalankan Docker Compose:
-   ```bash
-   docker-compose up --build -d
-   ```
-   Lakukan sinkronisasi database:
-   ```bash
-   npx prisma db push
-   ```
-
----
-
-*Selamat membangun! Dokumentasi ini dirancang agar siap digunakan sebagai panduan langsung dalam penulisan kode.*
+</div>
+]]>
